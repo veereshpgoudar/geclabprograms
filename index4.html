@@ -1,1 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Lab Programs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(45deg, rgba(255, 0, 150, 0.7), rgba(0, 204, 255, 0.7), rgba(0, 255, 255, 0.7));
+            background-size: 400% 400%;
+            animation: gradientAnimation 8s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+#output {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    color: black;
+    white-space: pre-wrap; /* Preserve whitespace */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 300px; /* Set a maximum height */
+    padding: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: inline-block;
+    animation: caret-blink 0.7s steps(1) infinite; /* Caret blink effect */
+}
 
+/* Optional caret-blink animation */
+@keyframes caret-blink {
+    0% {
+        border-right-color: transparent;
+    }
+    50% {
+        border-right-color: black;
+    }
+    100% {
+        border-right-color: transparent;
+    }
+}
+    
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto; 
+            z-index: 1;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+
+        /* Text fade-in animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            animation: slideIn 1s ease-out;
+        }
+
+        /* Animation for heading */
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            opacity: 0;
+            animation: fadeIn 2s ease-out forwards;
+        }
+
+        .output {
+            margin-top: 20px;
+            visibility: hidden; /* Hide initially */
+        }
+.program-output {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: fadeIn 1s ease-out forwards, liquidText 3s ease-in-out infinite;
+    font-size: 16px;
+    color: #333;
+    position: relative;
+    z-index: 0;
+}
+
+
+        @keyframes shake {
+            0% {
+                transform: translateX(-10px);
+            }
+            25% {
+                transform: translateX(10px);
+            }
+            50% {
+                transform: translateX(-10px);
+            }
+            75% {
+                transform: translateX(10px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .programs-list {
+            animation: shake 0.5s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VTU Lab Programs</h1>
+        <div class="form-group">
+            <label for="semester">Select Semester:</label>
+            <select id="semester" onchange="updatePrograms()"/>
+                <option value="">--Select Semester--</option>
+                <option value="sem1">Semester 1</option>
+                <option value="sem2">Semester 2</option>
+                <option value="sem3">Semester 3</option>
+                <option value="sem4">Semester 4</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="subject">Select Subject:</label>
+            <select id="subject" onchange="updatePrograms()">
+                <option value="">--Select Subject--</option>
+                <option value="oop">Object-Oriented Programming (Java)</option>
+                <option value="os">Operating System</option>
+                <option value="ds">Data Structures</option>
+                <option value="python">Python Programming</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="program">Select Program:</label>
+            <select id="program">
+                <option value="">--Select Program--</option>
+            </select>
+        </div>
+        <div class="output">
+            <h3>Program Output:</h3>
+            <pre id="output" class="program-output"></pre>
+        </div>
+    </div>
+
+    <script>
+        const programsData = {
+            sem1: {
+                oop: [
+                    "Program 1: Hello World in Java",
+                    "Program 2: Basic Calculator",
+                    "Program 3: Simple Banking System"
+                ],
+                os: [
+                    "Program 1: Process Scheduling",
+                    "Program 2: Memory Management",
+                    "Program 3: File Management"
+                ],
+                ds: [
+                    "Program 1: Linked List Operations",
+                    "Program 2: Stack Implementation",
+                    "Program 3: Queue Operations"
+                ],
+                python: [
+                    "Program 1: Basic Python Syntax",
+                    "Program 2: Python File Handling",
+                    "Program 3: Python OOP"
+                ]
+            },
+            sem2: {
+                oop: [
+                    "Program 1: Inheritance in Java",
+                    "Program 2: Polymorphism in Java",
+                    "Program 3: Java Collections"
+                ],
+                os: [
+                    "Program 1: Semaphore and Mutex",
+                    "Program 2: Deadlock Detection",
+                    "Program 3: Virtual Memory"
+                ],
+                ds: [
+                    "Program 1: Binary Search Tree",
+                    "Program 2: Graph Traversal",
+                    "Program 3: Sorting Algorithms"
+                ],
+                python: [
+                    "Program 1: Python Functions",
+                    "Program 2: Python Recursion",
+                    "Program 3: Python Database Connection"
+                ]
+            },
+            sem3: {
+                oop: [
+                   `Program 1: 
+
+/*Java Program to add two matrix*/
+import java.util.Scanner;
+
+public class MatrixAdd {
+    public static void main(String[] args) {
+        int p, q, m, n; // Declare matrix size
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of rows in the first matrix:");
+        p = sc.nextInt(); // Initialize first matrix size
+        System.out.print("Enter the number of columns in the first matrix:");
+        q = sc.nextInt(); // Initialize first matrix size
+        System.out.print("Enter the number of rows in the second matrix:");
+        m = sc.nextInt(); // Initialize second matrix size
+        System.out.print("Enter the number of columns in the second matrix:");
+        n = sc.nextInt(); // Initialize second matrix size
+        if (p == m && q == n) {
+            int a[][] = new int[p][q]; // Declare first matrix
+            int b[][] = new int[m][n]; // Declare second matrix
+            int c[][] = new int[m][n]; // Declare third matrix
+            // Initialize the first matrix
+            System.out.println("Enter all the elements of first matrix:");
+            for (int i = 0; i < p; i++) {
+                for (int j = 0; j < q; j++) {
+                    a[i][j] = sc.nextInt();
+                }
+            }
+            System.out.println(" ");
+            // Initialize the second matrix
+            System.out.println("Enter all the elements of second matrix:");
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    b[i][j] = sc.nextInt();
+                }
+            }
+            System.out.println(" ");
+            // Print the first matrix
+            System.out.println("First Matrix:");
+            for (int i = 0; i < p; i++) {
+                for (int j = 0; j < q; j++) {
+                    System.out.print(a[i][j] + " ");
+                }
+                System.out.println(" ");
+            }
+            // Print the second matrix
+            System.out.println("Second Matrix:");
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    System.out.print(b[i][j] + " ");
+                }
+                System.out.println(" ");
+            }
+            // Loop to add matrix elements
+            for (int i = 0; i < p; i++) {
+                for (int j = 0; j < n; j++) {
+                    for (int k = 0; k < q; k++) {
+                        c[i][j] = a[i][j] + b[i][j];
+                    }
+                }
+            }
+            // Print the resultant matrix
+            System.out.println("Matrix after addition:");
+            for (int i = 0; i < p; i++) {
+                for (int j = 0; j < n; j++) {
+                    System.out.print(c[i][j] + " ");
+                }
+                System.out.println(" ");
+            }
+        } else {
+            System.out.println("Addition not possible");
+            System.out.println("Try Again");
+        }
+    }
+}`,
+
+
+
+`Program 2: 
+
+class Stack {
+    private int arr[];
+    private int top;
+    private int capacity;
+
+    // Constructor to initialize the stack
+    Stack(int size) {
+        arr = new int[size];
+        capacity = size;
+        top = -1;
+    }
+
+    // Utility function to add an element to the stack
+    public void push(int x) {
+        if (isFull()) {
+            System.out.println("Overflow\nProgram Terminated\n");
+            System.exit(-1);
+        }
+        System.out.println("Inserting " + x);
+        arr[++top] = x;
+    }
+
+    // Utility function to pop a top element from the stack
+    public int pop() {
+        // check for stack underflow
+        if (isEmpty()) {
+            System.out.println("Underflow\nProgram Terminated");
+            System.exit(-1);
+        }
+        System.out.println("Removing " + peek());
+        // decrease stack size by 1 and (optionally) return the popped element
+        return arr[top--];
+    }
+
+    // Utility function to return the top element of the stack
+    public int peek() {
+        if (!isEmpty()) {
+            return arr[top];
+        } else {
+            System.exit(-1);
+        }
+        return -1;
+    }
+
+    // Utility function to return the size of the stack
+    public int size() {
+        return top + 1;
+    }
+
+    // Utility function to check if the stack is empty or not
+    public boolean isEmpty() {
+        return top == -1; // or return size() == 0;
+    }
+
+    // Utility function to check if the stack is full or not
+    public boolean isFull() {
+        return top == capacity - 1; // or return size() == capacity;
+    }
+}
+
+class StackArrayV2 {
+    public static void main(String[] args) {
+        Stack stack = new Stack(3);
+        stack.push(1); // inserting 1 in the stack
+        stack.push(2); // inserting 2 in the stack
+        stack.pop(); // removing the top element (2)
+        stack.pop(); // removing the top element (1)
+        stack.push(3); // inserting 3 in the stack
+        System.out.println("The top element is " + stack.peek());
+        System.out.println("The stack size is " + stack.size());
+        stack.pop(); // removing the top element (3)
+        // check if the stack is empty
+        if (stack.isEmpty()) {
+            System.out.println("The stack is empty");
+        } else {
+            System.out.println("The stack is not empty");
+        }
+    }
+}`,
+
+
+`Program 3:
+
+class Employee {
+    int id;
+    String firstname;
+    String lastname;
+    int salary;
+
+    Employee(int id1, String firstname1, String lastname1, int salary1) {
+        id = id1;
+        firstname = firstname1;
+        lastname = lastname1;
+        salary = salary1;
+    }
+
+    int getId() {
+        return id;
+    }
+
+    String getFirstName() {
+        return firstname;
+    }
+
+    String getName() {
+        return firstname + " " + lastname;
+    }
+
+    int getAnnualSalary() {
+        return 12 * salary;
+    }
+
+    int raiseSalary(int r) {
+        int raise = salary / 100 * r;
+        System.out.print("raise in salary is:" + " ");
+        return salary + raise;
+    }
+
+    void setSalary(int sal) {
+        salary = sal;
+    }
+
+    String getLastName() {
+        return lastname;
+    }
+
+    int getSalary() {
+        return salary;
+    }
+
+    public String toString() {
+        return "object";
+    }
+}
+
+public class EmployeeDetails {
+    public static void main(String[] args) {
+        // Test constructor and toString()
+        Employee e1 = new Employee(8, "Shivaprakash", "Tumbagi", 2500);
+        System.out.println(e1); // toString();
+        // Test Setters and Getters
+        e1.setSalary(999);
+        System.out.println("id is: " + e1.getId());
+        System.out.println("firstname is: " + e1.getFirstName());
+        System.out.println("lastname is: " + e1.getLastName());
+        System.out.println("salary is: " + e1.getSalary());
+        System.out.println("name is: " + e1.getName());
+        System.out.println("annual salary is: " + e1.getAnnualSalary()); // Test method
+        System.out.println(e1.raiseSalary(10));
+        System.out.println(e1);
+    }
+}`,
+
+`Program 4: 
+
+class Mypoint {
+    int x, y;
+
+    Mypoint() {
+        x = 0;
+        y = 0;
+    }
+
+    Mypoint(int a, int b) {
+        x = a;
+        y = b;
+    }
+
+    int getX() {
+        return x;
+    }
+
+    int getY() {
+        return y;
+    }
+
+    void setX(int c) {
+        x = c;
+    }
+
+    void setY(int d) {
+        y = d;
+    }
+
+    void setXY(int f, int g) {
+        x = f;
+        y = g;
+    }
+
+    int[] getXY() {
+        int arr[] = new int[2];
+        arr[0] = x;
+        arr[1] = y;
+        return arr;
+    }
+
+    double distance(int x, int y) {
+        int xdiff = this.x - x;
+        int ydiff = this.y - y;
+        System.out.print("Distance (two arguments)=");
+        return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+    }
+
+    double distance(Mypoint my) {
+        int xdiff = this.x - my.x;
+        int ydiff = this.y - my.y;
+        System.out.print("Distance (Object passed)=");
+        return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+    }
+
+    double distance() {
+        int xdiff = this.x - 0;
+        int ydiff = this.y - 0;
+        System.out.print("Distance (no arguments passed)=");
+        return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+    }
+}
+
+public class MypointTest {
+    public static void main(String[] args) {
+        Mypoint p1 = new Mypoint(); // Test constructor
+        System.out.println(p1); // Test toString()
+        p1.setX(8); // Test setters
+        p1.setY(6);
+        System.out.println("x is: " + p1.getX()); // Test getters
+        System.out.println("y is: " + p1.getY());
+        p1.setXY(3, 0); // Test setXY()
+        System.out.println("x and y after setting new values");
+        System.out.println("x is: " + p1.getX()); // Test getters
+        System.out.println("y is: " + p1.getY());
+        System.out.println("Displaying x and y using getXY method");
+        System.out.println(p1.getXY()[0]); // Test getXY()
+        System.out.println(p1.getXY()[1]);
+        System.out.println(p1);
+        Mypoint p2 = new Mypoint(0, 4); // Test another constructor
+        System.out.println(p2);
+        System.out.println("x is: " + p2.getX()); // Test getters
+        System.out.println("y is: " + p2.getY());
+        // Testing the overloaded methods distance()
+        System.out.println(p1.distance(p2)); // which version?
+        System.out.println(p2.distance(p1)); // which version?
+        System.out.println(p1.distance(5, 6)); // which version?
+        System.out.println(p1.distance()); // which version?
+    }
+}`,
+
+
+`Program 5:  
+
+class Shape1 {
+    void draw() {
+        System.out.println("Drawing Shape");
+    }
+
+    void erase() {
+        System.out.println("erasing Shape");
+    }
+}
+
+class Circle1 extends Shape1 {
+    void draw() {
+        System.out.println("Drawing Circle");
+    }
+
+    void erase() {
+        System.out.println("erasing Circle");
+    }
+}
+
+class Triangle1 extends Shape1 {
+    void draw() {
+        System.out.println("Drawing Triangle");
+    }
+
+    void erase() {
+        System.out.println("erasing Triangle");
+    }
+}
+
+class Square1 extends Shape1 {
+    void draw() {
+        System.out.println("Drawing Square");
+    }
+
+    void erase() {
+        System.out.println("erasing Square");
+    }
+}
+
+class ShapeDE {
+    public static void main(String args[]) {
+        Shape1 c = new Circle1();
+        Shape1 t = new Triangle1();
+        Shape1 s = new Square1();
+        c.draw();
+        c.erase();
+        t.draw();
+        t.erase();
+        s.draw();
+        s.erase();
+    }
+}`,
+
+
+
+`Program 6:
+
+// Base class Shape
+abstract class Shape {
+    public abstract double getArea();
+
+    public abstract double getPerimeter();
+}
+
+// Subclass Circle
+class Circle extends Shape {
+    private double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double getArea() {
+        return Math.PI * radius * radius;
+    }
+
+    @Override
+    public double getPerimeter() {
+        return 2 * Math.PI * radius;
+    }
+}
+
+// Subclass Rectangle
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+
+    public Rectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    @Override
+    public double getArea() {
+        return length * width;
+    }
+
+    @Override
+    public double getPerimeter() {
+        return 2 * (length + width);
+    }
+}
+
+// Subclass Triangle
+class Triangle extends Shape {
+    private double side1;
+    private double side2;
+    private double side3;
+
+    public Triangle(double side1, double side2, double side3) {
+        this.side1 = side1;
+        this.side2 = side2;
+        this.side3 = side3;
+    }
+
+    @Override
+    public double getArea() {
+        double s = (side1 + side2 + side3) / 2;
+        return Math.sqrt(s * (s - side1) * (s - side2) * (s - side3));
+    }
+
+    @Override
+    public double getPerimeter() {
+        return side1 + side2 + side3;
+    }
+}
+
+public class ShapeT {
+    public static void main(String[] args) {
+        double r = 4.0;
+        Circle circle = new Circle(r);
+        double rs1 = 4.0, rs2 = 6.0;
+        double ts1 = 3.0, ts2 = 4.0, ts3 = 5.0;
+        Rectangle rectangle = new Rectangle(rs1, rs2);
+        Triangle triangle = new Triangle(ts1, ts2, ts3);
+        System.out.println("Radius of the Circle" + r);
+        System.out.println("Area of the Circle: " + circle.getArea());
+        System.out.println("Perimeter of the Circle: " + circle.getPerimeter());
+        System.out.println("\nSides of the rectangle are: " + rs1 + ',' + rs2);
+        System.out.println("Area of the Rectangle: " + rectangle.getArea());
+        System.out.println("Perimeter of the Rectangle: " + rectangle.getPerimeter());
+        System.out.println("\nSides of the Traiangel are: " + ts1 + ',' + ts2 + ',' + ts3);
+        System.out.println("Area of the Triangle: " + triangle.getArea());
+        System.out.println("Perimeter of the Triangle: " + triangle.getPerimeter());
+    }
+}`,
+
+
+`Program 7:
+
+interface Resizable {
+    void resizeWidth(int width);
+
+    void resizeHeight(int height);
+}
+
+class Rectangle2 implements Resizable {
+    private int width;
+    private int height;
+
+    public Rectangle2(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public void resizeWidth(int width) {
+        this.width = width;
+    }
+
+    public void resizeHeight(int height) {
+        this.height = height;
+    }
+
+    public void printSize() {
+        System.out.println("Width: " + width + ", Height: " + height);
+    }
+}
+
+public class InterResizable {
+    public static void main(String[] args) {
+        Rectangle2 rectangle = new Rectangle2(100, 150);
+        rectangle.printSize();
+        rectangle.resizeWidth(150);
+        rectangle.resizeHeight(200);
+        rectangle.printSize();
+    }
+}`,
+
+
+
+
+
+`Program 8:   
+
+class Outer {
+    String so = ("This is Outer Class");
+
+    void display() {
+        System.out.println(so);
+    }
+
+    void test() {
+        Inner inner = new Inner();
+        inner.display();
+    }
+
+    // this is an inner class
+    class Inner {
+        String si = ("This is inner Class");
+
+        void display() {
+            System.out.println(si);
+        }
+    }
+}
+
+class InnerClassDemo {
+    public static void main(String args[]) {
+        Outer outer = new Outer();
+        outer.display();
+        outer.test();
+    }
+}`,
+
+
+`Program 9:
+
+import java.io.*;
+class ExceptionTest {
+public static void main(String[ ] args) {
+try {
+int number[ ] = new int[10];
+number[10] = 30 / 0;
+} catch (ArithmeticException e) {
+System.out.println(
+"Zero cannot divide any number");
+} catch (ArrayIndexOutOfBoundsException e) {
+System.out.println(
+"Index out of size of the array");
+}
+}
+}`,
+
+`Program 10:
+
+//Save Circle1.java
+package mypack;
+public class Circle1
+{
+double r;
+public void area(int r)
+{
+System.out.println("Area of the circle = " + (3.14 * r * r));
+}
+}
+//Save Square1.java
+package mypack;
+public class Square1
+{
+double s;
+public void area(int s)
+{
+System.out.println("Area of the Square = " + (s * s));
+}
+}
+//Save Rectangle1.java
+package mypack;
+public class Rectangle1
+{
+double l,b;
+public void area(int l,int b)
+{
+System.out.println("Area of the circle = " + (l * b));
+}
+}
+//Save PackageTest.java
+import mypack. Circle1;
+import mypack.Square1;
+import mypack.Rectangle1;
+class PackageTest
+{
+public static void main(String a [ ])
+{
+Circle1 c = new Circle1( );
+c.area(10);
+Square1 s=new Square1( );
+s.area(10);
+Rectangle1 r=new Rectangle1( );
+r.area(10,10);
+}
+}`,
+
+`Program 11:
+
+class NewThread implements Runnable {
+    Thread t;
+
+    NewThread() {
+        // Create a new, second thread
+        t = new Thread(this, "Demo Thread");
+        System.out.println("Child thread: " + t);
+        t.start(); // Start the thread
+    }
+
+    // This is the entry point for the second thread.
+    public void run() {
+        try {
+            for (int i = 5; i > 0; i--) {
+                System.out.println("Child Thread: " + i);
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Child interrupted.");
+        }
+        System.out.println("Exiting child thread.");
+    }
+}
+
+class IntThread {
+    public static void main(String args[]) {
+        new NewThread(); // create a new thread
+        try {
+            for (int i = 5; i > 0; i--) {
+                System.out.println("Main Thread: " + i);
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Main thread interrupted.");
+        }
+    }
+}`,
+
+
+`Program 12:
+class MyThread extends Thread {
+    MyThread() {
+        super("using Thread class");
+        System.out.println("child thread: " + this);
+        start();
+    }
+
+    public void run() {
+        try {
+            for (int i = 5; i > 0; i--) {
+                System.out.println("Child thread" + i);
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+        }
+        System.out.println("exiting child thread ...");
+    }
+}
+
+class TestMyThread {
+    public static void main(String args[]) {
+        new MyThread();
+        try {
+            for (int k = 5; k < 0; k--) {
+                System.out.println("Running main thread:" + k);
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+        }
+        System.out.println("Exiting main thread...");
+    }
+}`
+],
+
+                os: [
+                
+                `Program 1: Develop a c program to implement the Process system calls (fork (), exec(), 
+wait(), create process, terminate process) :
+                    
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t pid, child_pid;
+    int status;
+
+    pid = fork();
+
+    if (pid < 0) {
+
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+
+        printf("Child process: PID = %d, PPID = %d\n", getpid(), getppid());
+
+        execlp("ls", "ls", NULL);
+
+        perror("execlp failed");
+        exit(EXIT_FAILURE);
+    } else {
+
+        printf("Parent process: PID = %d, Child PID = %d\n", getpid(), pid);
+
+        child_pid = wait(&status);
+
+        if (child_pid == -1) {
+            perror("wait failed");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status)) {
+            printf("Child process exited with status %d\n", WEXITSTATUS(status));
+        } else {
+            printf("Child process did not exit normally\n");
+        }
+    }
+
+    return 0;
+}`,
+                
+                `Program 2: Simulate the following CPU scheduling algorithms to find turnaround 
+time and waiting time 
+a) FCFS b) SJF c) Round Robin d) Priority.:
+                        
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int id;
+    int burst_time;
+    int priority;
+} Process;
+
+void fcfs_scheduling(int n, int burst_times[]) {
+    int waiting_time[n], turnaround_time[n];
+    waiting_time[0] = 0;
+    turnaround_time[0] = burst_times[0];
+
+    for (int i = 1; i < n; i++) {
+        waiting_time[i] = waiting_time[i - 1] + burst_times[i - 1];
+        turnaround_time[i] = waiting_time[i] + burst_times[i];
+    }
+
+    printf("FCFS Scheduling\n");
+    printf("Process ID\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\n", i + 1, burst_times[i], waiting_time[i], turnaround_time[i]);
+    }
+}
+
+int compare_sjf(const void *a, const void *b) {
+    return ((Process *)a)->burst_time - ((Process *)b)->burst_time;
+}
+
+void sjf_scheduling(int n, Process processes[]) {
+    int waiting_time[n], turnaround_time[n];
+
+    qsort(processes, n, sizeof(Process), compare_sjf);
+
+    waiting_time[0] = 0;
+    turnaround_time[0] = processes[0].burst_time;
+
+    for (int i = 1; i < n; i++) {
+        waiting_time[i] = waiting_time[i - 1] + processes[i - 1].burst_time;
+        turnaround_time[i] = waiting_time[i] + processes[i].burst_time;
+    }
+
+    printf("SJF Scheduling\n");
+    printf("Process ID\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\n", processes[i].id, processes[i].burst_time, waiting_time[i], turnaround_time[i]);
+    }
+}
+
+void round_robin_scheduling(int n, int burst_times[], int quantum) {
+    int remaining_times[n], waiting_time[n], turnaround_time[n];
+    int t = 0;
+
+    for (int i = 0; i < n; i++) {
+        remaining_times[i] = burst_times[i];
+    }
+
+    while (1) {
+        int done = 1;
+        for (int i = 0; i < n; i++) {
+            if (remaining_times[i] > 0) {
+                done = 0;
+                if (remaining_times[i] > quantum) {
+                    t += quantum;
+                    remaining_times[i] -= quantum;
+                } else {
+                    t += remaining_times[i];
+                    waiting_time[i] = t - burst_times[i];
+                    remaining_times[i] = 0;
+                }
+            }
+        }
+        if (done) {
+            break;
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        turnaround_time[i] = burst_times[i] + waiting_time[i];
+    }
+
+    printf("Round Robin Scheduling\n");
+    printf("Process ID\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\n", i + 1, burst_times[i], waiting_time[i], turnaround_time[i]);
+    }
+}
+
+int compare_priority(const void *a, const void *b) {
+    return ((Process *)a)->priority - ((Process *)b)->priority;
+}
+
+void priority_scheduling(int n, Process processes[]) {
+    int waiting_time[n], turnaround_time[n];
+
+    qsort(processes, n, sizeof(Process), compare_priority);
+
+    waiting_time[0] = 0;
+    turnaround_time[0] = processes[0].burst_time;
+
+    for (int i = 1; i < n; i++) {
+        waiting_time[i] = waiting_time[i - 1] + processes[i - 1].burst_time;
+        turnaround_time[i] = waiting_time[i] + processes[i].burst_time;
+    }
+
+    printf("Priority Scheduling\n");
+    printf("Process ID\tBurst Time\tPriority\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\t\t%d\n", processes[i].id, processes[i].burst_time, processes[i].priority, waiting_time[i], turnaround_time[i]);
+    }
+}
+
+int main() {
+    int n, quantum;
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    int burst_times[n];
+    Process processes[n];
+
+    printf("Enter burst times for each process:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Burst Time for P%d: ", i + 1);
+        scanf("%d", &burst_times[i]);
+        processes[i].id = i + 1;
+        processes[i].burst_time = burst_times[i];
+    }
+
+    printf("Enter the quantum time for Round Robin (0 to skip): ");
+    scanf("%d", &quantum);
+
+    if (quantum > 0) {
+        round_robin_scheduling(n, burst_times, quantum);
+    }
+
+    printf("Enter priorities for each process:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Priority for P%d: ", i + 1);
+        scanf("%d", &processes[i].priority);
+    }
+
+    fcfs_scheduling(n, burst_times);
+    sjf_scheduling(n, processes);
+    priority_scheduling(n, processes);
+
+    return 0;
+}`,
+                  `Program 3:Develop a C program to simulate producer-consumer problem using 
+semaphores:
+                    
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+
+#define BUFFER_SIZE 10
+
+int buffer[BUFFER_SIZE];
+int in = 0;
+int out = 0;
+
+sem_t empty;
+sem_t full;
+sem_t mutex;
+
+void* producer(void* arg) {
+    while (1) {
+        sleep(rand() % 3);
+        int item = rand() % 100;
+        sem_wait(&empty);
+        sem_wait(&mutex);
+        buffer[in] = item;
+        in = (in + 1) % BUFFER_SIZE;
+        printf("Produced: %d\n", item);
+        sem_post(&mutex);
+        sem_post(&full);
+    }
+    return NULL;
+}
+
+void* consumer(void* arg) {
+    while (1) {
+        sleep(rand() % 3);
+        sem_wait(&full);
+        sem_wait(&mutex);
+        int item = buffer[out];
+        out = (out + 1) % BUFFER_SIZE;
+        printf("Consumed: %d\n", item);
+        sem_post(&mutex);
+        sem_post(&empty);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t producer_thread, consumer_thread;
+
+    sem_init(&empty, 0, BUFFER_SIZE);
+    sem_init(&full, 0, 0);
+    sem_init(&mutex, 0, 1);
+
+    pthread_create(&producer_thread, NULL, producer, NULL);
+    pthread_create(&consumer_thread, NULL, consumer, NULL);
+
+    pthread_join(producer_thread, NULL);
+    pthread_join(consumer_thread, NULL);
+
+    sem_destroy(&empty);
+    sem_destroy(&full);
+    sem_destroy(&mutex);
+
+    return 0;
+}`,
+                
+                `Program 4:Develop a C Program which demonstrate interprocess communication between 
+a reader process and a writer process. Use mkfifo, open, read, write and close 
+API in your program:
+
+                
+                NOT UPDATE `,
+                
+`Program 5:Develop a C program to simulate Bankers Algorithm for DeadLock Avoidance:
+
+                
+#include<stdio.h>
+int max[100][100];
+int alloc[100][100];
+int need[100][100];
+int avail[100];
+int n, r;
+void input();
+void show();
+void cal();
+int main()
+{
+    printf("********** Banker's Algorithm ************\n");
+    input();
+    show();
+    cal();
+    return 0;
+}
+
+void input()
+{
+    int i, j;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+    printf("Enter the number of resources: ");
+    scanf("%d", &r);
+
+    printf("Enter the Max Matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < r; j++) {
+            scanf("%d", &max[i][j]);
+        }
+    }
+
+    printf("Enter the Allocation Matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < r; j++) {
+            scanf("%d", &alloc[i][j]);
+        }
+    }
+
+    printf("Enter the Available Resources:\n");
+    for (j = 0; j < r; j++) {
+        scanf("%d", &avail[j]);
+    }
+}
+
+void show()
+{
+    int i, j;
+    printf("\nProcess\tAllocation\tMax\t\tNeed\n");
+    for (i = 0; i < n; i++) {
+        printf("P%d\t", i + 1);
+        for (j = 0; j < r; j++) {
+            printf("%d ", alloc[i][j]);
+        }
+        printf("\t");
+        for (j = 0; j < r; j++) {
+            printf("%d ", max[i][j]);
+        }
+        printf("\t");
+        for (j = 0; j < r; j++) {
+            need[i][j] = max[i][j] - alloc[i][j];
+            printf("%d ", need[i][j]);
+        }
+        printf("\n");
+    }
+    printf("Available Resources: ");
+    for (j = 0; j < r; j++) {
+        printf("%d ", avail[j]);
+    }
+    printf("\n");
+}
+
+void cal()
+{
+    int finish[100] = {0}, safe[100], index = 0;
+    int i, j, k, flag = 1;
+
+    printf("\nSafe Sequence: ");
+    while (flag) {
+        flag = 0;
+        for (i = 0; i < n; i++) {
+            if (finish[i] == 0) { // Process is not yet finished
+                int canAllocate = 1;
+                for (j = 0; j < r; j++) {
+                    if (need[i][j] > avail[j]) {
+                        canAllocate = 0; // Resources are not sufficient
+                        break;
+                    }
+                }
+                if (canAllocate) {
+                    for (k = 0; k < r; k++) {
+                        avail[k] += alloc[i][k]; // Release resources
+                    }
+                    finish[i] = 1;
+                    safe[index++] = i;
+                    flag = 1;
+                    printf("P%d ", i + 1);
+                }
+            }
+        }
+    }
+
+    // Check if all processes are finished
+    int allFinished = 1;
+    for (i = 0; i < n; i++) {
+        if (finish[i] == 0) {
+            allFinished = 0;
+            break;
+        }
+    }
+
+    if (allFinished) {
+        printf("\nThe system is in a safe state.\n");
+    } else {
+        printf("\nThe system is not in a safe state.\n");
+    }
+}`,
+                
+                
+                
+                 `Program 6:  Develop a C program to simulate the following contiguous memory allocation 
+Techniques: 
+a) Worst fit b) Best fit c) First fit :
+
+ 
+ a)Worst fit:
+       
+#include<stdio.h>
+
+int main()
+{
+    int bsize[10], psize[10], bno, pno, flags[10], allocation[10], i, j;
+    
+    // Initialize flags and allocation arrays
+    for(i = 0; i < 10; i++)
+    {
+        flags[i] = 0;
+        allocation[i] = -1;
+    }
+
+    // Input number of blocks and their sizes
+    printf("Enter no. of blocks: ");
+    scanf("%d", &bno);
+    printf("\nEnter size of each block: ");
+    for(i = 0; i < bno; i++)
+        scanf("%d", &bsize[i]);
+
+    // Input number of processes and their sizes
+    printf("\nEnter no. of processes: ");
+    scanf("%d", &pno);
+    printf("\nEnter size of each process: ");
+    for(i = 0; i < pno; i++)
+        scanf("%d", &psize[i]);
+
+    // First fit allocation algorithm
+    for(i = 0; i < pno; i++) 
+    {
+        for(j = 0; j < bno; j++)
+        {
+            if(flags[j] == 0 && bsize[j] >= psize[i])
+            {
+                allocation[j] = i;
+                flags[j] = 1;
+                break;
+            }
+        }
+    }
+
+    // Display allocation details
+    printf("\nBlock no.\tsize\t\tprocess no.\t\tsize");
+    for(i = 0; i < bno; i++)
+    {
+        printf("\n%d\t\t%d\t\t", i, bsize[i]);
+        if(flags[i] == 1)
+            printf("%d\t\t\t%d", allocation[i], psize[allocation[i]]);
+        else
+            printf("Not allocated");
+    }
+    return 0; // Return success
+}
+                
+                
+b) Best fit:
+                
+#include<stdio.h>
+
+int main()
+{
+    int n, n1, i;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+    int process[n];
+    
+    printf("\nEnter the size of processes:\n");
+    for(i = 0; i < n; i++) {
+        scanf("%d", &process[i]);
+    }
+
+    printf("Enter the number of memory blocks: ");
+    scanf("%d", &n1);
+    int blocks[n1];
+    int total = 0;
+
+    printf("\nEnter the size of memory blocks:\n");
+    for(i = 0; i < n1; i++) {
+        scanf("%d", &blocks[i]);
+        total += blocks[i];
+    }
+
+    // Arrays to store the process allocation information
+    int process1[n1];
+    int job[n1];
+    int frag[n1];
+    int check[n1];
+    for(i = 0; i < n1; i++) {
+        check[i] = 0; // Initially no block is allocated
+    }
+
+    int used = 0;
+    int j, i1 = 0;
+
+    // First fit allocation algorithm
+    for(i = 0; i < n; i++) {
+        int max = -1, j1 = -1;
+        for(j = 0; j < n1; j++) {
+            if(check[j] == 0 && blocks[j] >= process[i] && blocks[j] > max) {
+                max = blocks[j];
+                j1 = j;
+            }
+        }
+
+        if(j1 != -1) { // If a suitable block is found
+            process1[j1] = process[i];
+            job[j1] = i + 1;  // Storing process number (1-indexed)
+            frag[j1] = blocks[j1] - process[i];
+            used += process[i];
+            check[j1] = 1; // Mark the block as allocated
+        }
+    }
+
+    // Printing the allocation results
+    printf("Block size\tProcess size\tProcess no\tFragmentation\n");
+    for(i = 0; i < n1; i++) {
+        if(check[i] == 1) {
+            printf("%d\t\t%d\t\t%d\t\t%d\n", blocks[i], process1[i], job[i], frag[i]);
+        } else {
+            printf("%d\t\tNot allocated\t-\t\t-\n", blocks[i]);
+        }
+    }
+
+    printf("\nTotal memory allocation: %d\n", total);
+    printf("Memory used: %d\n", used);
+    printf("Memory left: %d\n", total - used);
+
+    return 0;
+}
+                
+                
+                
+c)First fit:
+
+#include <stdio.h>
+void implementBestFit(int blockSize[], int blocks, int processSize[], int processes)
+{
+    // This will store the block id of the allocated block to a process
+    int allocation[processes];
+    int occupied[blocks];
+    
+    // Initially assigning -1 to all allocation indexes
+    // means nothing is allocated currently
+    for (int i = 0; i < processes; i++) {
+        allocation[i] = -1;
+    }
+    
+    for (int i = 0; i < blocks; i++) {
+        occupied[i] = 0;
+    }
+
+    // Pick each process and find suitable blocks according to its size and assign to it
+    for (int i = 0; i < processes; i++) {
+        int indexPlaced = -1;
+        for (int j = 0; j < blocks; j++) {
+            // If block can accommodate the process and is not occupied
+            if (blockSize[j] >= processSize[i] && !occupied[j]) {
+                // Place it at the first block fit to accommodate the process
+                if (indexPlaced == -1)
+                    indexPlaced = j;
+                // If any future block is smaller than the current block where
+                // process is placed, change the block (Best Fit)
+                else if (blockSize[j] < blockSize[indexPlaced])
+                    indexPlaced = j;
+            }
+        }
+        
+        // If we were successfully able to find block for the process
+        if (indexPlaced != -1) {
+            // Allocate this block to process[i]
+            allocation[i] = indexPlaced;
+            // Make the status of the block as occupied
+            occupied[indexPlaced] = 1;
+        }
+    }
+
+    // Display the allocation results
+    printf("\nProcess No.\tProcess Size\tBlock No.\n");
+    for (int i = 0; i < processes; i++) {
+        printf("%d \t\t\t %d \t\t\t", i + 1, processSize[i]);
+        if (allocation[i] != -1)
+            printf("%d\n", allocation[i] + 1);
+        else
+            printf("Not Allocated\n");
+    }
+}
+
+// Driver code
+int main() {
+    int blockSize[] = {100, 50, 30, 120, 35};
+    int processSize[] = {40, 10, 30, 60};
+    int blocks = sizeof(blockSize) / sizeof(blockSize[0]);
+    int processes = sizeof(processSize) / sizeof(processSize[0]);
+
+    implementBestFit(blockSize, blocks, processSize, processes);
+
+    return 0;
+}`,
+                
+                `Program 7: Develop a C program to simulate page replacement algorithms:
+a) FIFO b) LRU:
+
+a) FIFO: 
+                
+#include <stdio.h>
+int main() {
+    int i, j, n, a[50], frame[10], no, k, avail, count = 0;
+    
+    printf("\n ENTER THE NUMBER OF PAGES:\n");
+    scanf("%d", &n);
+
+    printf("\n ENTER THE PAGE NUMBERS:\n");
+    for (i = 0; i < n; i++)  // Fixing the indexing to start from 0
+        scanf("%d", &a[i]);
+
+    printf("\n ENTER THE NUMBER OF FRAMES: ");
+    scanf("%d", &no);
+
+    for (i = 0; i < no; i++)  // Initialize frames to -1
+        frame[i] = -1;
+
+    j = 0;  // This is the index for the frames
+    printf("\n\treference string\t page frames\n");
+
+    for (i = 0; i < n; i++) {
+        printf("%d\t\t", a[i]);
+        avail = 0;
+
+        // Check if the page is already in the frame
+        for (k = 0; k < no; k++) {
+            if (frame[k] == a[i]) {
+                avail = 1;
+                break;  // No need to continue checking if found
+            }
+        }
+
+        // If the page is not available in frames, replace a page
+        if (avail == 0) {
+            frame[j] = a[i];
+            j = (j + 1) % no;  // Increment frame pointer, wrap around using modulo
+            count++;  // Increase page fault count
+        }
+
+        // Print the current frame contents
+        for (k = 0; k < no; k++) {
+            if (frame[k] != -1)  // Only print frames with pages
+                printf("%d\t", frame[k]);
+            else
+                printf(" \t");  // Blank space for empty frames
+        }
+        printf("\n");
+    }
+
+    printf("Page Faults: %d\n", count);
+    return 0;
+}`,
+                
+                
+                
+                `Program 8: 8) Simulate following File Organization Techniques 
+a) Single level directory b) Two level directory:
+
+                
+                
+a)Single level directory
+                
+#include <stdio.h>
+#include <string.h> 
+
+struct {
+    char dname[10], fname[10][10];
+    int fcnt;
+} dir;
+
+int main() { 
+    int i, ch;
+    char f[30];
+    dir.fcnt = 0;
+
+    printf("\nEnter name of directory: ");
+    scanf("%s", dir.dname);
+
+    while (1) {
+        printf("\n\n1. Create File\t2. Delete File\t3. Search File\n4. Display Files\t5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &ch);
+
+        switch (ch) {
+            case 1: // Create File
+                if (dir.fcnt < 10) { // Ensure the number of files doesn't exceed the limit
+                    printf("\nEnter the name of the file: ");
+                    scanf("%s", dir.fname[dir.fcnt]);
+                    dir.fcnt++;
+                } else {
+                    printf("\nDirectory is full. Cannot add more files.");
+                }
+                break;
+
+            case 2: // Delete File
+                printf("\nEnter the name of the file: ");
+                scanf("%s", f);
+                for (i = 0; i < dir.fcnt; i++) {
+                    if (strcmp(f, dir.fname[i]) == 0) {
+                        printf("\nFile %s is deleted.", f);
+                        strcpy(dir.fname[i], dir.fname[dir.fcnt - 1]); // Replace with the last file
+                        dir.fcnt--;
+                        break;
+                    }
+                }
+                if (i == dir.fcnt) {
+                    printf("\nFile %s not found.", f);
+                }
+                break;
+
+            case 3: // Search File
+                printf("\nEnter the name of the file: ");
+                scanf("%s", f);
+                for (i = 0; i < dir.fcnt; i++) {
+                    if (strcmp(f, dir.fname[i]) == 0) {
+                        printf("\nFile %s is found.", f);
+                        break;
+                    }
+                }
+                if (i == dir.fcnt) {
+                    printf("\nFile %s not found.", f);
+                }
+                break;
+
+            case 4: // Display Files
+                if (dir.fcnt == 0) {
+                    printf("\nDirectory is empty.");
+                } else {
+                    printf("\nThe files are:");
+                    for (i = 0; i < dir.fcnt; i++) {
+                        printf("\t%s", dir.fname[i]);
+                    }
+                }
+                break;
+
+            case 5: // Exit
+                printf("\nExiting program...");
+                return 0;
+
+            default:
+                printf("\nInvalid choice. Please try again.");
+        }
+    }
+}`,
+                
+                
+                
+                
+                
+                
+                `Program 9: Develop a C program to simulate the Linked file allocation strategies:
+
+                
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct Block {
+    int data;
+    int next;
+} Block;
+
+void initializeDisk(Block disk[], int diskSize) {
+    for (int i = 0; i < diskSize; i++) {
+        disk[i].data = -1;
+        disk[i].next = -1;
+    }
+}
+
+void allocateFile(Block disk[], int diskSize, int fileSize, int *start) {
+    int freeBlocks = 0;
+    for (int i = 0; i < diskSize; i++) {
+        if (disk[i].data == -1) freeBlocks++;
+    }
+
+    if (fileSize > freeBlocks) {
+        printf("Not enough free blocks to allocate the file.\n");
+        return;
+    }
+
+    int blocks[fileSize];
+    int allocated = 0;
+
+    // Find free blocks
+    for (int i = 0; i < diskSize && allocated < fileSize; i++) {
+        if (disk[i].data == -1) {
+            blocks[allocated++] = i;
+        }
+    }
+
+    // Allocate blocks
+    *start = blocks[0];
+    for (int i = 0; i < fileSize; i++) {
+        disk[blocks[i]].data = i + 1; // Storing file data for simulation
+        if (i < fileSize - 1) {
+            disk[blocks[i]].next = blocks[i + 1];
+        } else {
+            disk[blocks[i]].next = -1; // End of file
+        }
+    }
+
+    printf("File allocated starting from block %d.\n", *start);
+}
+
+void printDisk(Block disk[], int diskSize) {
+    printf("Disk Status:\n");
+    printf("Block\tData\tNext\n");
+    for (int i = 0; i < diskSize; i++) {
+        printf("%d\t%d\t%d\n", i, disk[i].data, disk[i].next);
+    }
+}
+
+void displayFile(Block disk[], int start) {
+    if (start == -1) {
+        printf("No file allocated.\n");
+        return;
+    }
+
+    printf("File blocks: ");
+    int current = start;
+    while (current != -1) {
+        printf("%d -> ", current);
+        current = disk[current].next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    int diskSize = 10;
+    Block disk[diskSize];
+    initializeDisk(disk, diskSize);
+
+    int choice, fileSize, start = -1;
+
+    while (true) {
+        printf("\n1. Allocate File\n2. Print Disk\n3. Display File\n4. Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter file size (in blocks): ");
+                scanf("%d", &fileSize);
+                allocateFile(disk, diskSize, fileSize, &start);
+                break;
+            case 2:
+                printDisk(disk, diskSize);
+                break;
+            case 3:
+                displayFile(disk, start);
+                break;
+            case 4:
+                printf("Exiting program.\n");
+                return 0;
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+    }
+
+    return 0;
+}`,
+                
+                
+                
+                
+                `Program 10: Develop a C program to simulate SCAN disk scheduling algorithm.:
+
+                
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SIZE 10
+#define DISK_SIZE 200
+
+int comp(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
+}
+
+void SCAN(int arr[], int size, int head, const char* direction) {
+    int seek_count = 0;
+    int distance, cur_track;
+    int left[SIZE], right[SIZE];
+    int seek_sequence[SIZE + 2]; // Maximum possible size
+    int left_count = 0, right_count = 0;
+
+    // Adding 0 or DISK_SIZE-1 to simulate end points
+    if (strcmp(direction, "left") == 0) {
+        left[left_count++] = 0;
+    } else if (strcmp(direction, "right") == 0) {
+        right[right_count++] = DISK_SIZE - 1;
+    }
+
+    // Separating requests into left and right of the head
+    for (int i = 0; i < size; i++) {
+        if (arr[i] < head) {
+            left[left_count++] = arr[i];
+        } else {
+            right[right_count++] = arr[i];
+        }
+    }
+
+    // Sorting both sides
+    qsort(left, left_count, sizeof(int), comp);
+    qsort(right, right_count, sizeof(int), comp);
+
+    int index = 0;
+
+    // Scanning in the specified direction
+    if (strcmp(direction, "left") == 0) {
+        for (int i = left_count - 1; i >= 0; i--) {
+            cur_track = left[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+        for (int i = 0; i < right_count; i++) {
+            cur_track = right[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+    } else if (strcmp(direction, "right") == 0) {
+        for (int i = 0; i < right_count; i++) {
+            cur_track = right[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+        for (int i = left_count - 1; i >= 0; i--) {
+            cur_track = left[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+    }
+
+    // Output results
+    printf("Total seek operations = %d\n", seek_count);
+    printf("Seek Sequence is:\n");
+    for (int i = 0; i < index; i++) {
+        printf("%d ", seek_sequence[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr[SIZE] = {126, 90, 14, 50, 25, 42, 51, 78, 102, 100};
+    int head = 42;
+    char direction[] = "left";
+
+    SCAN(arr, SIZE, head, direction);
+
+    return 0;
+}`,
+                
+                
+                
+                
+                
+                
+                
+                
+
+                    
+                ],
+                ds: [
+                    "NOT UPDATE"
+                    
+                ],
+                python: [
+                    `Program 1: 1a. Calculate average of best 2 out of 3 tests:
+                    
+    marks1 = int(input("Enter marks for test1 : "))
+    marks2 = int(input("Enter marks for test2 : "))
+    marks3 = int(input("Enter marks for test3 : "))
+    
+    minimum = min(marks1, marks2, marks3)
+    sumof2 = marks1 + marks2 + marks3 - minimum
+    avgof2 = sumof2 / 2
+    print("Average of best 2 =", avgof2)
+    
+    
+    
+    
+    1b.The given number is palindrome or not:
+    
+num = input("Enter a number: ")
+print(f"{num} is a palindrome." if num == num[::-1] else f"{num} is not a palindrome.")`,
+    
+                        `Program 2: 2a Fibonacci sequence program:
+                        
+n = int(input("Enter the number of terms: "))
+a, b = 0, 1
+for _ in range(n - 1):
+    a, b = b, a + b
+print(a)
+
+ 
+
+2b: Binary to decimal and octal to hexadecimal:
+
+def binary_to_decimal(binary_str):
+    return int(binary_str, 2)
+
+def octal_to_hexadecimal(octal_str):
+    return hex(int(octal_str, 8))[2:]
+
+binary = input("Enter a binary number: ")
+octal = input("Enter an octal number: ")
+
+print("Binary to Decimal:", binary_to_decimal(binary))
+print("Octal to Hexadecimal:", octal_to_hexadecimal(octal))`,
+
+
+   `Program 3: 3a Upper case, lower case and digits:
+                    
+sentence = input("Enter a sentence: ")
+words = len(sentence.split())
+digits = sum(c.isdigit() for c in sentence)
+upper = sum(c.isupper() for c in sentence)
+lower = sum(c.islower() for c in sentence)
+print(f"Words: {words}, Digits: {digits}, Uppercase: {upper}, Lowercase: {lower}")
+
+ 
+
+3b: Similarity between two said strings
+
+str1, str2 = input("Enter String 1: "), input("Enter String 2: ")
+similarity = sum(1 for a, b in zip(str1.lower(), str2.lower()) if a == b) / max(len(str1), len(str2))
+print(f"Similarity between two said strings:\n{similarity:.1f}")`,
+    
+    
+    
+    
+    
+    
+`Program 4: 4a Demonstrate how to Draw a Bar Plot using Matplotlib   
+
+import matplotlib.pyplot as plt 
+
+x = [1, 2, 3, 4, 5] 
+
+y = [3, 5, 7, 2, 1] 
+plt.bar(x, y, color='green') 
+plt.title('Bar Plot Example') 
+plt.xlabel('X Axis') 
+plt.ylabel('Y Axis') 
+plt.show()
+
+
+
+4b:Draw a Scatter Plot using Matplotlib:
+
+import matplotlib.pyplot as plt 
+import numpy as np 
+x = np.random.randn(100) 
+y = np.random.randn(100) 
+plt.scatter(x, y) 
+plt.title('Scatter Plot') 
+plt.xlabel('X') 
+plt.ylabel('Y') 
+plt.show()`,
+
+
+
+`Program 5: 5a Demonstrate how to Draw a Histogram Plot using Matplotlib
+
+import matplotlib.pyplot as plt 
+import numpy as np 
+data = np.random.normal(100, 10, 1000) 
+plt.hist(data, bins=20, edgecolor='black') 
+plt.xlabel('Value') 
+plt.ylabel('Frequency') 
+plt.title('Histogram of Data') 
+plt.grid(True) 
+plt.show()
+
+
+
+5b:Demonstrate how to Draw a Pie Chart using Matplotlib
+
+import matplotlib.pyplot as plt 
+labels = ['A', 'B', 'C', 'D'] 
+sizes = [15, 30, 45, 10] 
+plt.pie(sizes, labels=labels, autopct="%1.1f%%") 
+plt.title("Pie Chart") 
+plt.show()`,
+
+
+
+`Program 6: 6a Linear Plotting using Matplotlib:
+
+import matplotlib.pyplot as plt 
+import numpy as np 
+X = np.array([2, 4, 6, 8, 10]) 
+Y = X * 2 
+plt.plot(X, Y) 
+plt.xlabel("X-axis Label") 
+plt.ylabel("Y-axis Label") 
+plt.title("This is the title of of the plot") 
+plt.show()
+
+
+6b:liner plotting with line formatting using Matplotlib
+
+import matplotlib.pyplot as plt 
+import numpy as np 
+x = np.linspace(0, 10, 100) 
+y = np.sin(x) 
+plt.plot(x, y, color='blue', linestyle='-', linewidth=2) 
+plt.title('Line Plot') 
+plt.xlabel('X Axis') 
+plt.ylabel('Y Axis') 
+plt.show()`,
+
+
+`Program 7:seaborn plots with Aesthetic functions:
+
+import seaborn as sns 
+import matplotlib.pyplot as plt 
+tips = sns.load_dataset("tips") 
+sns.scatterplot(x="total_bill", y="tip", data=tips) 
+sns.set_style("whitegrid") 
+sns.set_palette("Set2") 
+sns.despine() 
+plt.show()`,
+
+`Program 8: plotting different types of plots using Bokeh:
+
+from bokeh.plotting import figure, show 
+x = [1, 2, 3, 4, 5] 
+y = [6, 7, 2, 4, 5] 
+p = figure(title="Interactive line graph", x_axis_label='x', y_axis_label='y') 
+p.line(x, y, legend_label="Line", line_width=2) 
+p.annular_wedge(x=5, y=5, inner_radius=0.2, outer_radius=0.4, start_angle=45, end_angle=135, 
+line_color="red", fill_color="red") 
+show(p)`,
+
+
+`Program 9:  draw 3D Plots using Plotly Libraries:
+
+import plotly.graph_objects as go 
+import numpy as npx = np.linspace(0, 10, 100) 
+y = np.linspace(0, 10, 100) 
+z = np.random.randn(100, 100) 
+fig = go.Figure(data=[go.Scatter3d(x=x, y=y, z=z, mode='markers')]) 
+fig.update_layout(title='3D Scatter Plot', scene=dict(xaxis_title='X Axis', yaxis_title='Y Axis', zaxis_title='Z 
+Axis')) 
+fig.show()`,
+
+
+`Program 10: 10a draw Time Series using Plotly Libraries:
+
+import plotly.graph_objects as godata = [ 
+{'x': [1, 2, 3, 4, 5], 'y': [6, 7, 2, 4, 5]}, 
+{'x': [6, 7, 8, 9, 10], 'y': [1, 3, 5, 7, 9]} 
+] 
+fig = go.Figure() 
+for i in range(len(data)): 
+fig.add_trace(go.Scatter(x=data[i]['x'], y=data[i]['y'], mode='lines')) 
+fig.update_layout(title='Time Series', xaxis_title='Time', yaxis_title='Value') 
+fig.show()
+
+
+Program 10b: creating Maps using Plotly Libraries:
+
+import plotly.express as px 
+df = px.data.election() 
+geojson = px.data.election_geojson() 
+fig = px.choropleth(df, geojson=geojson, color="Bergeron",locations="district", 
+featureidkey="properties.district",projection="mercator") 
+fig.update_geos(fitbounds="locations", visible=True) 
+fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}) 
+fig.show()`
+                ]
+            },
+            
+            sem4: {
+                oop: [
+                    "Program 1: Advanced Java OOP Concepts",
+                    "Program 2: Java Multithreading",
+                    "Program 3: Java Networking"
+                ],
+                os: [
+                    "Program 1: Kernel Programming",
+                    "Program 2: Process Synchronization",
+                    "Program 3: System Calls in OS"
+                ],
+                ds: [
+                    "Program 1: Advanced Graph Algorithms",
+                    "Program 2: Shortest Path Algorithm",
+                    "Program 3: Network Flow Algorithms"
+                ],
+                python: [
+                    "Program 1: Python Machine Learning",
+                    "Program 2: Python Data Processing",
+                    "Program 3: Python AI Basics"
+                ]
+            }
+        };
+
+function updatePrograms() {
+    const semester = document.getElementById("semester").value;
+    const subject = document.getElementById("subject").value;
+    const programSelect = document.getElementById("program");
+    const outputDiv = document.querySelector(".output");
+
+    // Clear previous program options
+    programSelect.innerHTML = "<option value=''>--Select Program--</option>";
+    outputDiv.style.visibility = "hidden";
+
+    if (semester && subject) {
+        const programs = programsData[semester][subject];
+        if (programs) {
+            // Add program options
+            programs.forEach((program, index) => {
+                const option = document.createElement("option");
+                option.value = index; // Use index as value
+                option.textContent = program.split(":")[0]; // Show title only
+                programSelect.appendChild(option);
+            });
+
+            programSelect.disabled = false;
+        } else {
+            programSelect.disabled = true;
+        }
+    } else {
+        programSelect.disabled = true;
+    }
+}
+
+document.getElementById("program").addEventListener("change", function () {
+    const selectedProgramIndex = this.value;
+    const semester = document.getElementById("semester").value;
+    const subject = document.getElementById("subject").value;
+    const output = document.getElementById("output");
+    const outputDiv = document.querySelector(".output");
+
+    if (semester && subject && selectedProgramIndex !== "") {
+        const programList = programsData[semester][subject];
+        const program = programList[selectedProgramIndex];
+
+        outputDiv.style.visibility = "visible";
+        typeWriter(output, program); // Call typewriter animation function
+    }
+});
+
+function typeWriter(element, text) {
+    element.textContent = ""; // Clear the content
+    let index = 0;
+
+    function write() {
+        if (index < text.length) {
+            element.textContent += text.charAt(index);
+            index++;
+            setTimeout(write, 5); // Adjust speed (50ms per character)
+        }
+    }
+
+    write(); // Start the typing animation
+}
+    
+        
+
+
+    </script>
+</body>
+</html>
+
+       
+       
